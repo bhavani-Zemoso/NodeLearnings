@@ -1,0 +1,25 @@
+extends ../layouts/main.pug
+
+block content
+    main 
+        if courses.length > 0
+            .grid 
+                each course in courses 
+                    article.card.course-item 
+                        header.card__header 
+                            h1.course__name  #{course.name}
+                        .card__image 
+                            img(src=course.image, alt=course.name)
+                        .card__content 
+                            h2.course__price #{course.price}
+                            p.course__rating #{course.rating}
+                            small.course__duration #{course.duration}
+                        .card__actions
+                            a(href=`/edit-course/${course.id}?edit=true`) 
+                                button.btn(type="submit") Edit
+                            form(action=`/delete-course/${course.id}`, method="post") 
+                                button.btn(type="submit") Delete 
+        
+        else 
+            h1 No Courses Yet!
+                            
