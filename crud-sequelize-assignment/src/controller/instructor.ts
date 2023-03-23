@@ -55,7 +55,7 @@ const addCourse = (
 		.catch((error: Error) => console.log(error));
 };
 
-const renderEditCourse = (
+const renderEditCourse = async (
 	request: express.Request,
 	response: express.Response,
 	_next: NextFunction
@@ -64,21 +64,22 @@ const renderEditCourse = (
 	console.log(editMode);
 	if (!editMode) response.redirect('/');
 	const courseId = request.params.courseId;
-	request.user
-		.getCourses({ where: { id: courseId } })
-		.then((courses: any) => {
-			const course = courses[0];
-			if (!course) return response.redirect('/');
-			response.render('instructor/add-course', {
-				pageTitle: 'Edit Course',
-				editing: editMode,
-				course: course,
-			});
-		})
-		.catch((error: Error) => console.log(error));
+
+	try {
+		const courses = await request.user.getCourses({ where: { id: courseId } });
+		const course = courses[0];
+		if (!course) return response.redirect('/');
+		response.render('instructor/add-course', {
+			pageTitle: 'Edit Course',
+			editing: editMode,
+			course: course,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
-const editCourse = (
+const editCourse = async (
 	request: express.Request,
 	response: express.Response,
 	_next: NextFunction
@@ -89,38 +90,35 @@ const editCourse = (
 	const updatedDuration = request.body.duration;
 	const updatedRating = request.body.rating;
 	const updatedPrice = request.body.price;
-	Course.findByPk(courseId)
-		.then((course: any) => {
-			console.log('Course Image: ', course.image, 'Course name: ', course.name);
-			course.name = updatedName;
-			course.image = updatedImage;
-			course.duration = updatedDuration;
-			course.rating = updatedRating;
-			course.price = updatedPrice;
-			return course.save();
-		})
-		.then((result) => {
-			response.redirect('/');
-		})
-		.catch((error: Error) => console.log(error));
+
+	try {
+		const course = await Course.findByPk(courseId);
+		course!.name = updatedName;
+		course!.image = updatedImage;
+		course!.duration = updatedDuration;
+		course!.rating = updatedRating;
+		course!.price = updatedPrice;
+		await course?.save();
+		response.redirect('/');
+	} catch (error) {
+		console.log(error);
+	}
 };
 
-const deleteCourse = (
+const deleteCourse = async (
 	request: express.Request,
 	response: express.Response,
 	_next: NextFunction
 ) => {
 	const courseId = request.params.courseId;
-	Course.findByPk(courseId)
-		.then((course: any) => {
-			return course.destroy();
-		})
-		.then((result) => {
-			response.redirect('/');
-		})
-		.catch((error: Error) => {
-			console.log(error);
-		});
+
+	try {
+		const course = await Course.findByPk(courseId);
+		await course?.destroy();
+		response.redirect('/');
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 export default {
