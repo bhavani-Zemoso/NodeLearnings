@@ -10,8 +10,8 @@ exports.postOrder = (req, res, next) => {
 			});
 			const order = new Order({
 				user: {
-					name: req.user.name,
-					userId: req.user,
+					name: req.session.user.name,
+					userId: req.session.user,
 				},
 				products: products,
 			});
@@ -19,7 +19,7 @@ exports.postOrder = (req, res, next) => {
 		})
 		.then((order) => {
 			console.log(order);
-			return req.user.clearCart();
+			return req.session.user.clearCart();
 		})
 		.then((result) => {
 			res.redirect('/orders');
@@ -28,12 +28,13 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-	Order.find({ 'user.userId': req.user._id })
+	Order.find({ 'user.userId': req.session.user._id })
 		.then((orders) => {
 			res.render('shop/orders', {
 				path: '/orders',
 				docTitle: 'Your Orders',
 				orders: orders,
+				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));
