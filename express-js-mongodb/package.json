@@ -10,8 +10,12 @@
   "author": "Bhavani Somanchi",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "connect-mongodb-session": "^3.1.1",
+    "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^2.2.3",
+    "csurf": "^1.11.0",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-handlebars": "^7.0.1",
