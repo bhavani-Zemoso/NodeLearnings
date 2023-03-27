@@ -10,8 +10,12 @@
   "author": "Bhavani Somanchi",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^3.1.1",
+    "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-handlebars": "^7.0.1",
@@ -19,6 +23,8 @@
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.2",
     "mysql2": "^3.2.0",
+    "nodemailer": "^6.9.1",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "pug": "^3.0.2",
     "sequelize": "^6.29.2"
   }

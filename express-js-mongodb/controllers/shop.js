@@ -8,7 +8,6 @@ exports.getProducts = (req, res, next) => {
 				prods: products,
 				docTitle: 'All Products',
 				path: '/products',
-				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));
@@ -22,7 +21,6 @@ exports.getProduct = (req, res, next) => {
 				docTitle: product.title,
 				product: product,
 				path: '/products',
-				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));
@@ -35,7 +33,6 @@ exports.getIndex = (req, res, next) => {
 				prods: products,
 				docTitle: 'Shop',
 				path: '/',
-				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));

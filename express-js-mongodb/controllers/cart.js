@@ -9,7 +9,6 @@ exports.getCart = (req, res, _next) => {
 				docTitle: 'Your Cart',
 				path: '/cart',
 				products: products,
-				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));

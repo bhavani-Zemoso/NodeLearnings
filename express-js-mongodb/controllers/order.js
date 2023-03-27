@@ -10,7 +10,7 @@ exports.postOrder = (req, res, next) => {
 			});
 			const order = new Order({
 				user: {
-					name: req.session.user.name,
+					email: req.user.email,
 					userId: req.session.user,
 				},
 				products: products,
@@ -19,7 +19,7 @@ exports.postOrder = (req, res, next) => {
 		})
 		.then((order) => {
 			console.log(order);
-			return req.session.user.clearCart();
+			return req.user.clearCart();
 		})
 		.then((result) => {
 			res.redirect('/orders');
@@ -34,7 +34,6 @@ exports.getOrders = (req, res, next) => {
 				path: '/orders',
 				docTitle: 'Your Orders',
 				orders: orders,
-				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch((error) => console.log(error));
