@@ -3,14 +3,18 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const { SENDGRID_API_KEY } = process.env;
 
 const User = require('../schemas/user');
 
 const transporter = nodemailer.createTransport(
 	sendgridTransport({
 		auth: {
-			api_key:
-				'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',
+			api_key: SENDGRID_API_KEY,
 		},
 	})
 );
@@ -149,7 +153,7 @@ exports.postReset = (req, res, next) => {
 			})
 			.then((result) => {
 				res.redirect('/');
-				console.log(req.body.email)
+				console.log(req.body.email);
 				return transporter.sendMail({
 					to: req.body.email,
 					from: 'bhavanisomanchi06@gmail.com',
