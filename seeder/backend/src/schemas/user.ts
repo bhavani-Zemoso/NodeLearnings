@@ -22,8 +22,8 @@ const userSchema = new Schema<IUser>({
 		type: String,
 		required: true,
 		validate: {
-			validator: function (v) {
-				return /^[A-Z]{5}[0-9]{4}$/.test(v);
+			validator: function (v: string) {
+				return /^[A-Z]{5}\d{4}$/.test(v);
 			},
 			message: (props) => `${props.value} is not a valid pan number!`,
 		},
@@ -32,8 +32,8 @@ const userSchema = new Schema<IUser>({
 		type: String,
 		required: true,
 		validate: {
-			validator: function (v) {
-				return /^((\+91?)|\+)?[7-9][0-9]{8,9}$/;
+			validator: function (v: string) {
+				return /^((\+91?)|\+)?[7-9]\d{8,9}$/;
 			},
 			message: (props) => `${props.value} is not a valid phone number!`,
 		},
