@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 const rootDir = require('./utils/path');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const errorController = require('./controllers/error');
 const User = require('./schemas/user');
@@ -23,6 +23,7 @@ const store = new MongoDBStore({
 const csrfProtection = csrf();
 
 app.use(express.static(path.join(rootDir, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
 	session({
 		secret: 'my secret',
@@ -32,6 +33,7 @@ app.use(
 	})
 );
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
 	if (!req.session.user) {
@@ -59,8 +61,6 @@ const shopRoutes = require('./routes/shop');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/order');
 const authRoutes = require('./routes/auth');
-
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);

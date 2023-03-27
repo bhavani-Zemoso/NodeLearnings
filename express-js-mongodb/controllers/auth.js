@@ -1,25 +1,43 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+
 const User = require('../schemas/user');
 
+const transporter = nodemailer.createTransport(
+	sendgridTransport({
+		auth: {
+			api_key:
+				'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',
+		},
+	})
+);
+
 exports.getLogin = (req, res, next) => {
-	// const cookie = req.get('Cookie');
-	// let isLoggedIn;
-	// if(cookie)
-	// 	isLoggedIn = req.get('Cookie').split('=')[1];
-	// console.log(isLoggedIn)
-	console.log(req.session.isLoggedIn);
+	let message = req.flash('error');
+	if (message.length > 0) {
+		message = message[0];
+	} else {
+		message = null;
+	}
 	res.render('auth/login', {
 		path: '/login',
 		docTitle: 'Login',
-		isAuthenticated: false,
+		errorMessage: message,
 	});
 };
 
 exports.getSignup = (req, res, next) => {
+	let message = req.flash('error');
+	if (message.length > 0) {
+		message = message[0];
+	} else {
+		message = null;
+	}
 	res.render('auth/signup', {
 		path: '/signup',
 		docTitle: 'Signup',
-		isAuthenticated: false,
+		errorMessage: message,
 	});
 };
 
@@ -30,6 +48,7 @@ exports.postLogin = (req, res, next) => {
 	User.findOne({ email: email })
 		.then((user) => {
 			if (!user) {
+				req.flash('error', 'Invalid email or password');
 				return res.redirect('/login');
 			}
 			bcrypt
@@ -43,6 +62,7 @@ exports.postLogin = (req, res, next) => {
 							res.redirect('/');
 						});
 					}
+					req.flash('error', 'Invalid email or password');
 					res.redirect('/login');
 				})
 				.catch((error) => {
@@ -60,6 +80,7 @@ exports.postSignup = (req, res, next) => {
 	User.findOne({ email: email })
 		.then((userDoc) => {
 			if (userDoc) {
+				req.flash('error', 'Email exists already, please pick a new one!');
 				return res.redirect('/signup');
 			}
 			return bcrypt
@@ -74,6 +95,12 @@ exports.postSignup = (req, res, next) => {
 				})
 				.then((result) => {
 					res.redirect('/login');
+					return transporter.sendMail({
+						to: email,
+						from: 'bhavanisomanchi06@gmail.com',
+						subject: 'Signup succeeded!',
+						html: '<h1>You successfully signed up!</h1>',
+					});
 				});
 		})
 		.catch((error) => {
