@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
+import contractRoutes from './routes/contract';
+
 dotenv.config();
 
 const { DATABASE_URI } = process.env;
@@ -11,7 +13,9 @@ const MONGODB_URI = DATABASE_URI as string;
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use('/api', contractRoutes)
 
 mongoose
 	.connect(MONGODB_URI)
