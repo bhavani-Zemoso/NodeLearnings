@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
 import contractRoutes from './routes/contract';
+import paymentRoutes from './routes/payment';
 
 dotenv.config();
 
@@ -15,7 +16,8 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use('/api', contractRoutes)
+app.use('/api', contractRoutes);
+app.use('/api', paymentRoutes);
 
 mongoose
 	.connect(MONGODB_URI)

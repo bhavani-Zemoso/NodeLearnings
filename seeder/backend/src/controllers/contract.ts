@@ -1,4 +1,4 @@
-import express, { NextFunction, request } from 'express';
+import express, { NextFunction } from 'express';
 import Contract from '../schemas/contract';
 
 const createContract = async (
