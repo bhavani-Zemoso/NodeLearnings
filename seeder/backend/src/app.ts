@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 
 import contractRoutes from './routes/contract';
 import paymentRoutes from './routes/payment';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -16,8 +17,21 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((_request, response, next) => {
+	response.setHeader('Access-Control-Allow-Origin', '*');
+	response.setHeader(
+		'Access-Control-Allow-Methods',
+		'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+	);
+	response.setHeader(
+		'Access-Control-Allow-Headers',
+		'Content-Type, Authorization'
+	);
+	next();
+});
 app.use('/api', contractRoutes);
 app.use('/api', paymentRoutes);
+app.use('/api', authRoutes);
 
 mongoose
 	.connect(MONGODB_URI)

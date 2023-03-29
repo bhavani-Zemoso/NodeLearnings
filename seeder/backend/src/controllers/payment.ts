@@ -13,9 +13,9 @@ const createPayment = async (
 
 	const payment = new Payment({
 		status: status,
-        due_date: due_date,
-        expected_amount: expected_amount,
-        outstanding_amount: outstanding_amount,
+		due_date: due_date,
+		expected_amount: expected_amount,
+		outstanding_amount: outstanding_amount,
 	});
 
 	try {
@@ -87,10 +87,10 @@ const updatePayment = async (
 		const payment = await Payment.findById(paymentId).exec();
 
 		if (payment) {
-            payment.status = updated_status;
-            payment.due_date = updated_due_date;
-            payment.expected_amount = updated_expected_amount;
-            payment.outstanding_amount = updated_outstanding_amount;
+			payment.status = updated_status;
+			payment.due_date = updated_due_date;
+			payment.expected_amount = updated_expected_amount;
+			payment.outstanding_amount = updated_outstanding_amount;
 			await payment.save();
 
 			response.status(200).json({
@@ -108,22 +108,24 @@ const updatePayment = async (
 	}
 };
 
-const deletePayment = async (request: express.Request,
+const deletePayment = async (
+	request: express.Request,
 	response: express.Response,
-	_next: NextFunction) => {
-        const paymentId = request.params.paymentId;
+	_next: NextFunction
+) => {
+	const paymentId = request.params.paymentId;
 
-        await Payment.findByIdAndRemove(paymentId);
+	await Payment.findByIdAndRemove(paymentId);
 
-        response.status(201).json({
-            message: 'Payment deleted successfully',
-        })
-    }
+	response.status(201).json({
+		message: 'Payment deleted successfully',
+	});
+};
 
 export default {
 	createPayment,
 	getAllPayments,
 	getPaymentById,
 	updatePayment,
-    deletePayment,
+	deletePayment,
 };

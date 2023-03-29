@@ -117,22 +117,24 @@ const updateContract = async (
 	}
 };
 
-const deleteContract = async (request: express.Request,
+const deleteContract = async (
+	request: express.Request,
 	response: express.Response,
-	_next: NextFunction) => {
-        const contractId = request.params.contractId;
+	_next: NextFunction
+) => {
+	const contractId = request.params.contractId;
 
-        await Contract.findByIdAndRemove(contractId);
+	await Contract.findByIdAndRemove(contractId);
 
-        response.status(201).json({
-            message: 'Contract deleted successfully',
-        })
-    }
+	response.status(201).json({
+		message: 'Contract deleted successfully',
+	});
+};
 
 export default {
 	createContract,
 	getAllContracts,
 	getContractById,
 	updateContract,
-    deleteContract,
+	deleteContract,
 };
