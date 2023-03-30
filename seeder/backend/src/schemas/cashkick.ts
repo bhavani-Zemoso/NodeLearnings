@@ -4,15 +4,16 @@ interface ICashkick {
 	name: string;
 	status: string;
 	maturity: Date;
-	total_recieved: number;
+	total_received: number;
 	total_financed: number;
 	contracts: [
 		{
 			contract_id: Types.ObjectId;
-			amount: number;
+			payment_amount: number;
 		}
 	];
 	payment_id: Types.ObjectId;
+	user_id: Types.ObjectId;
 }
 
 const cashkickSchema = new Schema<ICashkick>({
@@ -32,7 +33,7 @@ const cashkickSchema = new Schema<ICashkick>({
 		type: Date,
 		required: true,
 	},
-	total_recieved: {
+	total_received: {
 		type: Number,
 		required: true,
 	},
@@ -47,7 +48,7 @@ const cashkickSchema = new Schema<ICashkick>({
 				ref: 'Contract',
 				required: true,
 			},
-			amount: {
+			payment_amount: {
 				type: Number,
 				required: true,
 			},
@@ -58,6 +59,11 @@ const cashkickSchema = new Schema<ICashkick>({
 		ref: 'Payment',
 		required: true,
 	},
+	user_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required: true,
+	}
 });
 
 const Cashkick = model<ICashkick>('Cashkick', cashkickSchema);

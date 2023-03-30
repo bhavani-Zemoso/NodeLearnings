@@ -18,9 +18,9 @@ const checkAuthentication = (
 		});
 	}
 	const token = authenticationHeader.split(' ')[1];
-	let decodedToken: any;
+	let decodedToken;
 	try {
-		decodedToken = jwt.verify(token, JWT_SECRET as string);
+		decodedToken = <jwt.UserDetailsJwtPayload>jwt.verify(token, JWT_SECRET as string);
 	} catch (error) {
 		return response.status(500).json({
 			message: 'Unexpected error',

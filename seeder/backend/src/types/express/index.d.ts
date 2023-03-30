@@ -1,6 +1,6 @@
 import { ValidationError } from 'express-validator';
 import express from '.';
-import jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 
 declare global {
 	namespace Express {
@@ -14,4 +14,11 @@ declare global {
 		statusCode?: number;
 		data?: ValidationError[];
 	}
+}
+
+declare module 'jsonwebtoken' {
+    export interface UserDetailsJwtPayload extends jwt.JwtPayload {
+        userId: string,
+		email: string,
+    }
 }

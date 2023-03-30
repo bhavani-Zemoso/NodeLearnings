@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import contractRoutes from './routes/contract';
 import paymentRoutes from './routes/payment';
 import authRoutes from './routes/auth';
+import cashkickRoutes from './routes/cashkick';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use((_request, response, next) => {
 });
 app.use('/api', contractRoutes);
 app.use('/api', paymentRoutes);
+app.use('/api', cashkickRoutes);
 app.use('/api', authRoutes);
 
 mongoose
