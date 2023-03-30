@@ -1,10 +1,11 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 interface IPayment {
 	status: string;
 	due_date: Date;
 	expected_amount: number;
 	outstanding_amount: number;
+	user_id: Types.ObjectId;
 }
 
 const paymentSchema = new Schema<IPayment>({
@@ -29,6 +30,11 @@ const paymentSchema = new Schema<IPayment>({
 		type: Number,
 		required: true,
 	},
+	user_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
+		required: true,
+	}
 });
 
 const Payment = model<IPayment>('Payment', paymentSchema);

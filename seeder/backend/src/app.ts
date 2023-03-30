@@ -3,10 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
-import contractRoutes from './routes/contract';
-import paymentRoutes from './routes/payment';
-import authRoutes from './routes/auth';
-import cashkickRoutes from './routes/cashkick';
+import routes from './routes/routes'
 
 dotenv.config();
 
@@ -30,10 +27,8 @@ app.use((_request, response, next) => {
 	);
 	next();
 });
-app.use('/api', contractRoutes);
-app.use('/api', paymentRoutes);
-app.use('/api', cashkickRoutes);
-app.use('/api', authRoutes);
+
+app.use(routes);
 
 mongoose
 	.connect(MONGODB_URI)

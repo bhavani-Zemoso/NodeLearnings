@@ -1,4 +1,6 @@
 import express, { NextFunction } from 'express';
+import { validationResult } from 'express-validator';
+
 import Contract from '../schemas/contract';
 
 const createContract = async (
@@ -6,6 +8,13 @@ const createContract = async (
 	response: express.Response,
 	_next: NextFunction
 ) => {
+	const errors = validationResult(request);
+	if (!errors.isEmpty()) {
+		const error = new Error('Validation failed.');
+		error.statusCode = 422;
+		error.data = errors.array();
+		throw error;
+	}
 	const name = request.body.name;
 	const type = request.body.type;
 	const amount = request.body.amount;
@@ -81,6 +90,13 @@ const updateContract = async (
 	response: express.Response,
 	_next: NextFunction
 ) => {
+	const errors = validationResult(request);
+	if (!errors.isEmpty()) {
+		const error = new Error('Validation failed.');
+		error.statusCode = 422;
+		error.data = errors.array();
+		throw error;
+	}
 	const contractId = request.params.contractId;
 	const updated_name = request.body.name;
 	const updated_type = request.body.type;
@@ -124,7 +140,7 @@ const deleteContract = async (
 ) => {
 	const contractId = request.params.contractId;
 
-	await Contract.findByIdAndRemove(contractId);
+	await Contract.findByIdAndRemove(contractId).exec();
 
 	response.status(201).json({
 		message: 'Contract deleted successfully',

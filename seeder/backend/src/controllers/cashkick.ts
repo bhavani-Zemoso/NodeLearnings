@@ -41,6 +41,7 @@ const createCashkick = async (
 		due_date: paymentDate,
 		expected_amount: payment_expected_amount,
 		outstanding_amount: payment_outstanding_amount,
+		user_id: userId,
 	});
 
 	let savedPayment;
