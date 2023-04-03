@@ -6,7 +6,7 @@ import Contract from '../schemas/contract';
 const createContract = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -15,12 +15,15 @@ const createContract = async (
 		error.data = errors.array();
 		throw error;
 	}
-	const name = request.body.name;
-	const type = request.body.type;
-	const amount = request.body.amount;
-	const per_payment = request.body.per_payment;
-	const term_length_fee = request.body.term_length_fee;
-	const term_length_months = request.body.term_length_months;
+
+	const {
+		name,
+		type,
+		amount,
+		per_payment,
+		term_length_fee,
+		term_length_months,
+	} = request.body;
 
 	const contract = new Contract({
 		name: name,
@@ -38,16 +41,14 @@ const createContract = async (
 			contract: contract,
 		});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const getAllContracts = async (
 	_request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	try {
 		const contracts = await Contract.find().exec();
@@ -55,18 +56,16 @@ const getAllContracts = async (
 			contracts: contracts,
 		});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const getContractById = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
-	const contractId = request.params.contractId;
+	const { contractId } = request.params;
 
 	try {
 		const contract = await Contract.findById(contractId).exec();
@@ -79,16 +78,14 @@ const getContractById = async (
 				message: 'Contract with given id not found',
 			});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const updateContract = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -97,24 +94,28 @@ const updateContract = async (
 		error.data = errors.array();
 		throw error;
 	}
-	const contractId = request.params.contractId;
-	const updated_name = request.body.name;
-	const updated_type = request.body.type;
-	const updated_amount = request.body.amount;
-	const updated_per_payment = request.body.per_payment;
-	const updated_term_length_fee = request.body.term_length_fee;
-	const updated_term_length_months = request.body.term_length_months;
+
+	const { contractId } = request.params;
+
+	const {
+		name,
+		type,
+		amount,
+		per_payment,
+		term_length_fee,
+		term_length_months,
+	} = request.body;
 
 	try {
 		const contract = await Contract.findById(contractId).exec();
 
 		if (contract) {
-			contract.name = updated_name;
-			contract.type = updated_type;
-			contract.amount = updated_amount;
-			contract.per_payment = updated_per_payment;
-			contract.term_length_fee = updated_term_length_fee;
-			contract.term_length_months = updated_term_length_months;
+			contract.name = name;
+			contract.type = type;
+			contract.amount = amount;
+			contract.per_payment = per_payment;
+			contract.term_length_fee = term_length_fee;
+			contract.term_length_months = term_length_months;
 
 			await contract.save();
 
@@ -127,24 +128,26 @@ const updateContract = async (
 			});
 		}
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const deleteContract = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
-	const contractId = request.params.contractId;
+	const { contractId } = request.params;
 
-	await Contract.findByIdAndRemove(contractId).exec();
+	try {
+		await Contract.findByIdAndRemove(contractId).exec();
 
-	response.status(201).json({
-		message: 'Contract deleted successfully',
-	});
+		response.status(201).json({
+			message: 'Contract deleted successfully',
+		});
+	} catch (error: any) {
+		next(error);
+	}
 };
 
 export default {

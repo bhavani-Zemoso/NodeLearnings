@@ -14,7 +14,7 @@ import User from '../schemas/user';
 const signUp = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -23,12 +23,9 @@ const signUp = async (
 		error.data = errors.array();
 		throw error;
 	}
-	const username = request.body.username;
-	const email = request.body.email;
-	const password = request.body.password;
-	const phone_number = request.body.phone_number;
-	const pan_number = request.body.pan_number;
-	const avatar = request.body.avatar;
+
+	const { username, email, password, phone_number, pan_number, avatar } =
+		request.body;
 
 	const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -48,18 +45,17 @@ const signUp = async (
 			message: 'User created successfully',
 			username: savedUser.username,
 		});
-	} catch (error) {
-		response.status(500).json({ message: 'An unexpected error occured!' });
+	} catch (error: any) {
+		next(error);
 	}
 };
 
 const login = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
-	const email = request.body.email;
-	const password = request.body.password;
+	const { email, password } = request.body;
 
 	try {
 		const user = await User.findOne({ email: email }).exec();
@@ -87,8 +83,8 @@ const login = async (
 		response
 			.status(200)
 			.json({ message: 'User logged in successfully', token: token });
-	} catch (error) {
-		response.status(500).json({ message: 'Unexpected error!' });
+	} catch (error: any) {
+		next(error);
 	}
 };
 
