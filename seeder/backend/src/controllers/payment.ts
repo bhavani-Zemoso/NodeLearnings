@@ -6,7 +6,7 @@ import Payment from '../schemas/payment';
 const createPayment = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -18,10 +18,8 @@ const createPayment = async (
 
 	const userId = request.userId;
 
-	const status = request.body.status;
-	const due_date = request.body.due_date;
-	const expected_amount = request.body.expected_amount;
-	const outstanding_amount = request.body.outstanding_amount;
+	const { status, due_date, expected_amount, outstanding_amount } =
+		request.body;
 
 	const payment = new Payment({
 		status: status,
@@ -38,16 +36,14 @@ const createPayment = async (
 			payment: payment,
 		});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const getAllPayments = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const userId = request.userId;
 	try {
@@ -56,22 +52,20 @@ const getAllPayments = async (
 			payments: payments,
 		});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const getPaymentById = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
-	const paymentId = request.params.paymentId;
+	const { paymentId } = request.params;
 	const userId = request.userId;
 
 	try {
-		const payment = await Payment.find({
+		const payment = await Payment.findOne({
 			user_id: userId,
 			_id: paymentId,
 		}).exec();
@@ -84,16 +78,14 @@ const getPaymentById = async (
 				message: 'Payment with given id not found',
 			});
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const updatePayment = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const errors = validationResult(request);
 	if (!errors.isEmpty()) {
@@ -102,26 +94,24 @@ const updatePayment = async (
 		error.data = errors.array();
 		throw error;
 	}
-	const paymentId = request.params.paymentId;
+	const { paymentId } = request.params;
 	const userId = request.userId;
 
-	const updated_status = request.body.status;
-	const updated_due_date = request.body.due_date;
-	const updated_expected_amount = request.body.expected_amount;
-	const updated_outstanding_amount = request.body.outstanding_amount;
+	const { status, due_date, expected_amount, outstanding_amount } =
+		request.body;
 
 	try {
-		const payment = await Payment.find({
+		const payment = await Payment.findOne({
 			_id: paymentId,
 			user_id: userId,
 		}).exec();
 
 		if (payment) {
-			payment[0].status = updated_status;
-			payment[0].due_date = updated_due_date;
-			payment[0].expected_amount = updated_expected_amount;
-			payment[0].outstanding_amount = updated_outstanding_amount;
-			await payment[0].save();
+			payment.status = status;
+			payment.due_date = due_date;
+			payment.expected_amount = expected_amount;
+			payment.outstanding_amount = outstanding_amount;
+			await payment.save();
 
 			response.status(200).json({
 				payment: payment,
@@ -132,19 +122,17 @@ const updatePayment = async (
 			});
 		}
 	} catch (error: any) {
-		response.status(500).json({
-			message: 'Something went wrong!',
-		});
+		next(error);
 	}
 };
 
 const deletePayment = async (
 	request: express.Request,
 	response: express.Response,
-	_next: NextFunction
+	next: NextFunction
 ) => {
 	const userId = request.userId;
-	const paymentId = request.params.paymentId;
+	const { paymentId } = request.params;
 
 	try {
 		const payment = await Payment.find({
@@ -154,10 +142,10 @@ const deletePayment = async (
 		if (payment) await Payment.deleteOne(payment).exec();
 		else response.status(404).json({ message: 'Payment with id not found' });
 	} catch (error) {
-		response.status(500).json({ message: 'Unexpected error!' });
+		next(error);
 	}
 
-	response.status(201).json({
+	response.status(204).json({
 		message: 'Payment deleted successfully',
 	});
 };

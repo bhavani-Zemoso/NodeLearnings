@@ -5,6 +5,8 @@ import * as dotenv from 'dotenv';
 
 import routes from './routes/routes'
 
+import errorResponse from './middleware/error';
+
 dotenv.config();
 
 const { DATABASE_URI } = process.env;
@@ -29,6 +31,7 @@ app.use((_request, response, next) => {
 });
 
 app.use(routes);
+app.use(errorResponse);
 
 mongoose
 	.connect(MONGODB_URI)
