@@ -3,6 +3,7 @@ import { Schema, model, Types } from 'mongoose';
 interface IUser {
 	username: string;
 	email: string;
+	password: string;
 	pan_number: string;
 	phone_number: string;
 	avatar?: string;
@@ -15,6 +16,10 @@ const userSchema = new Schema<IUser>({
 		required: true,
 	},
 	email: {
+		type: String,
+		required: true,
+	},
+	password: {
 		type: String,
 		required: true,
 	},
@@ -44,9 +49,11 @@ const userSchema = new Schema<IUser>({
 	},
 	cashkicks: [
 		{
-			id: Schema.Types.ObjectId,
-			ref: 'Cashkick',
-			required: true,
+			id: {
+				type: Schema.Types.ObjectId,
+				ref: 'Cashkick',
+				required: true,
+			},
 		},
 	],
 });
