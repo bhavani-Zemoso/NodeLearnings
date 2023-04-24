@@ -31,8 +31,6 @@ const checkAuthentication = (
 		return response.status(401).json({ message: 'Not authenticated' });
 	}
 
-	console.log(decodedToken);
-
 	request.token = decodedToken;
 	request.userId = decodedToken.userId;
 	next();

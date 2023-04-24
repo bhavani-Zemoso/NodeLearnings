@@ -142,7 +142,7 @@ const deleteContract = async (
 	try {
 		await Contract.findByIdAndRemove(contractId).exec();
 
-		response.status(201).json({
+		response.status(204).json({
 			message: 'Contract deleted successfully',
 		});
 	} catch (error: any) {

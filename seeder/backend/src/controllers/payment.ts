@@ -65,7 +65,7 @@ const getPaymentById = async (
 	const userId = request.userId;
 
 	try {
-		const payment = await Payment.find({
+		const payment = await Payment.findOne({
 			user_id: userId,
 			_id: paymentId,
 		}).exec();
@@ -101,17 +101,17 @@ const updatePayment = async (
 		request.body;
 
 	try {
-		const payment = await Payment.find({
+		const payment = await Payment.findOne({
 			_id: paymentId,
 			user_id: userId,
 		}).exec();
 
 		if (payment) {
-			payment[0].status = status;
-			payment[0].due_date = due_date;
-			payment[0].expected_amount = expected_amount;
-			payment[0].outstanding_amount = outstanding_amount;
-			await payment[0].save();
+			payment.status = status;
+			payment.due_date = due_date;
+			payment.expected_amount = expected_amount;
+			payment.outstanding_amount = outstanding_amount;
+			await payment.save();
 
 			response.status(200).json({
 				payment: payment,
@@ -145,7 +145,7 @@ const deletePayment = async (
 		next(error);
 	}
 
-	response.status(201).json({
+	response.status(204).json({
 		message: 'Payment deleted successfully',
 	});
 };
